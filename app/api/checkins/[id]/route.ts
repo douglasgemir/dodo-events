@@ -18,6 +18,21 @@ export async function GET(
   return NextResponse.json(checkin);
 }
 
+export async function PUT(
+  req: Request,
+  { params }: { params: Promise<{ id: string }> },
+) {
+  const { id } = await params;
+  const body = await req.json();
+
+  const checkin = await prisma.checkin.update({
+    where: { id: Number(id) },
+    data: body,
+  });
+
+  return NextResponse.json(checkin);
+}
+
 export async function DELETE(
   _: Request,
   { params }: { params: Promise<{ id: string }> },

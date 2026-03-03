@@ -16,9 +16,13 @@ export async function GET() {
 export async function POST(req: Request) {
   const body = await req.json();
 
-  const checkin = await prisma.checkin.create({
-    data: body,
-  });
-
-  return NextResponse.json(checkin, { status: 201 });
+  try {
+    const checkin = await prisma.checkin.create({
+      data: body,
+    });
+    return NextResponse.json(checkin, { status: 201 });
+  } catch (error: any) {
+    console.error("Erro ao criar checkin:", error);
+    return NextResponse.json({ error: error.message || "Erro interno ao criar checkin" }, { status: 500 });
+  }
 }

@@ -33,9 +33,20 @@ export async function DELETE(
   { params }: { params: Promise<{ id: string }> },
 ) {
   const { id } = await params;
-  await prisma.user.delete({
-    where: { id: Number(id) },
-  });
+  
+  try {
+    await prisma.$transaction([
+      prisma.checkin.deleteMany({
+        where: { userId: Number(id) },
+      }),
+      prisma.user.delete({
+        where: { id: Number(id) },
+      }),
+    ]);
+  } catch (error) {
+    console.error("Failed to delete user", error);
+    return NextResponse.json({ error: "Failed to delete user" }, { status: 500 });
+  }
 
   return NextResponse.json({ message: "User deleted" });
 }

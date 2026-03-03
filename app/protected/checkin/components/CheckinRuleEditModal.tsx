@@ -77,23 +77,35 @@ export function CheckinRuleEditModal({
 
   const handleSave = () => {
     if (!formData) return;
-    // validation: if creating a mandatory rule, ensure it does not overlap
-    // with any other mandatory rule for the same event
-    if (isCreating && formData.mandatory) {
+    setErrorMessage(null); // Clear errors before validating
+
+    if (formData.mandatory) {
+      // Validate overlapping rules
       const newStart = Number(formData.startOffset ?? 0);
       const newEnd = Number(formData.endOffset ?? 0);
 
       const conflict = existingRules
-        .filter((r) => r.mandatory)
+        .filter((r) => r.mandatory && r.id !== checkinRule?.id) // Exclude current rule if editing
         .some((r) => {
           const s = Number(r.startOffset ?? 0);
           const e = Number(r.endOffset ?? 0);
-          return newStart <= e && s <= newEnd;
+          
+          // Two intervals overlap if (StartA <= EndB) and (EndA >= StartB)
+          // To calculate time: Event is T=0.
+          // Rule starts at T - startOffset, and ends at T + endOffset
+          // Therefore, Start = -startOffset, End = endOffset
+          const currentStart = -newStart;
+          const currentEnd = newEnd;
+          
+          const existingStart = -s;
+          const existingEnd = e;
+
+          return currentStart <= existingEnd && currentEnd >= existingStart;
         });
 
       if (conflict) {
         setErrorMessage(
-          "Não é possível criar uma regra obrigatória que conflite com outra obrigatória no mesmo período.",
+          "Não é possível cadastrar duas regras obrigatórias em intervalos que se sobrepõem.",
         );
         return;
       }

@@ -33,10 +33,20 @@ export async function DELETE(
   _: Request,
   { params }: { params: Promise<{ id: string }> },
 ) {
-  const { id } = await params;
-  await prisma.event.delete({
-    where: { id: Number(id) },
-  });
+  try {
+    const { id } = await params;
+    const eventId = Number(id);
 
-  return NextResponse.json({ message: "Event deleted" });
+    // Prisma transactional delete to ensure children are removed first
+    await prisma.$transaction([
+      prisma.checkin.deleteMany({ where: { eventId } }),
+      prisma.checkinRule.deleteMany({ where: { eventId } }),
+      prisma.event.delete({ where: { id: eventId } })
+    ]);
+
+    return NextResponse.json({ message: "Event deleted" });
+  } catch (error: any) {
+    console.error("Error deleting event:", error);
+    return NextResponse.json({ error: error.message }, { status: 500 });
+  }
 }

@@ -11,9 +11,11 @@ import {
   SidebarTrigger,
 } from "./sidebar";
 
-import { LayoutDashboard, Calendar, Users, QrCode } from "lucide-react";
+import { LayoutDashboard, Calendar, Users, QrCode, LogOut } from "lucide-react";
+import { useAuth } from "@/contexts/AuthContext";
 
 export const AppSideBar = () => {
+  const { logout, user } = useAuth();
   const itens = [
     { name: "Dashboard", link: "/protected/dashboard", icon: LayoutDashboard },
     { name: "Eventos", link: "/protected/events", icon: Calendar },
@@ -39,10 +41,14 @@ export const AppSideBar = () => {
                 </SidebarMenuButton>
               </SidebarMenuItem>
             ))}
-          </SidebarMenu>
+              <SidebarMenuItem className="mt-8">
+                <SidebarMenuButton onClick={logout} className="text-red-500 hover:text-red-600 hover:bg-red-50">
+                  <LogOut className="mr-2" />
+                  <span>Sair da conta</span>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+            </SidebarMenu>
         </SidebarGroup>
-      </SidebarContent>
-      <SidebarFooter></SidebarFooter>
-    </Sidebar>
+      </SidebarContent>    </Sidebar>
   );
 };

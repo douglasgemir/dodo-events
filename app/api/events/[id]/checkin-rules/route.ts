@@ -16,6 +16,31 @@ export async function GET(
   return NextResponse.json(rules);
 }
 
+export async function POST(
+  req: Request,
+  { params }: { params: Promise<{ id: string }> },
+) {
+  try {
+    const { id } = await params;
+    const body = await req.json();
+
+    const rule = await prisma.checkinRule.create({
+      data: {
+        type: body.type,
+        startOffset: Number(body.startOffset) || 0,
+        endOffset: Number(body.endOffset) || 0,
+        mandatory: body.mandatory ?? false,
+        eventId: Number(id),
+      },
+    });
+
+    return NextResponse.json(rule, { status: 201 });
+  } catch (error: any) {
+    console.error("Error creating checkin rule:", error);
+    return NextResponse.json({ error: error.message }, { status: 400 });
+  }
+}
+
 export async function PUT(
   req: Request,
   { params }: { params: Promise<{ id: string }> },
@@ -25,7 +50,12 @@ export async function PUT(
 
   const rule = await prisma.checkinRule.update({
     where: { id: Number(id) },
-    data: body,
+    data: {
+      type: body.type,
+      startOffset: Number(body.startOffset) || 0,
+      endOffset: Number(body.endOffset) || 0,
+      mandatory: body.mandatory ?? false,
+    },
   });
 
   return NextResponse.json(rule);

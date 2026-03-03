@@ -12,6 +12,8 @@ export const useViewModel = () => {
   const { data: eventList, isLoading } = useEvents();
 
   const [manuallySelectedId, setManuallySelectedId] = useState<string>();
+  const [editModalOpen, setEditModalOpen] = useState(false);
+  const [selectedRuleForEdit, setSelectedRuleForEdit] = useState<CheckinRule | null>(null);
 
   const selectedEventId = manuallySelectedId ?? eventList?.[0]?.id;
 
@@ -70,5 +72,9 @@ export const useViewModel = () => {
     toggleMandatory,
     removeRule,
     createRule,
+    editModalOpen,
+    setEditModalOpen,
+    selectedRuleForEdit,
+    setSelectedRuleForEdit,
   };
 };

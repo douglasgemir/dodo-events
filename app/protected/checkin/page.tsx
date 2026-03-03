@@ -4,6 +4,7 @@ import { CustomCard } from "@/components/molecules/customcard";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
+import { Skeleton } from "@/components/ui/skeleton";
 import {
   Select,
   SelectContent,
@@ -11,14 +12,11 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Card, CardFooter, CardHeader } from "@/components/ui/card";
-import { CheckinRule } from "@/prisma/generated/client";
-import { useViewModel } from "./useViewModel";
-import { Switch } from "@/components/ui/switch";
-import { Pencil, Trash, Plus } from "lucide-react";
-// mutations moved into useViewModel
 import { CheckinRuleEditModal } from "./components/CheckinRuleEditModal";
-import { useState } from "react";
+import { CheckinRuleCard } from "./components/CheckinRuleCard";
+import { CheckinRuleCardSkeleton } from "./components/CheckinRuleCardSkeleton";
+import { useViewModel } from "./useViewModel";
+import { Plus } from "lucide-react";
 
 type Event = {
   id: string;
@@ -44,11 +42,11 @@ export default function Checkin() {
     toggleMandatory,
     removeRule,
     createRule,
+    editModalOpen,
+    setEditModalOpen,
+    selectedRuleForEdit,
+    setSelectedRuleForEdit,
   } = useViewModel();
-
-  const [editModalOpen, setEditModalOpen] = useState(false);
-  const [selectedRuleForEdit, setSelectedRuleForEdit] =
-    useState<CheckinRule | null>(null);
 
   if (isLoading) {
     return null;
@@ -63,8 +61,6 @@ export default function Checkin() {
             Gerencie as regras de validação de check-in por evento
           </Label>
         </div>
-
-        <Button>Salvar regras</Button>
       </div>
 
       <div className="px-8 flex flex-col gap-6">
@@ -115,78 +111,31 @@ export default function Checkin() {
 
         <div className="flex flex-col gap-4">
           {isLoadingCheckins ? (
-            <div>
-              <Label>Carregando...</Label>
+            <>
+              {Array.from({ length: 3 }).map((_, i) => (
+                <CheckinRuleCardSkeleton key={i} />
+              ))}
+            </>
+          ) : checkinRulesList?.length === 0 && selectedEventId ? (
+            <div className="text-center py-12 flex flex-col items-center justify-center space-y-3 bg-white/50 border border-dashed rounded-xl">
+              <Label className="text-lg font-medium text-muted-foreground cursor-pointer">Nenhuma regra cadastrada</Label>
+              <Label className="text-sm text-muted-foreground w-full cursor-pointer">
+                Crie uma nova regra de check-in para este evento clicando no botão "Nova Regra" acima.
+              </Label>
             </div>
           ) : (
             <>
-              {checkinRulesList?.map((checkinRule: CheckinRule) => (
-                <Card
+              {checkinRulesList?.map((checkinRule: any) => (
+                <CheckinRuleCard
                   key={checkinRule.id}
-                  className="flex flex-row justify-between"
-                >
-                  <CardHeader>
-                    <Label className="text-lg font-semibold">
-                      {checkinRule.type}
-                    </Label>
-                  </CardHeader>
-                  <CardFooter className="flex flex-col gap-4">
-                    <div className="flex w-full justify-end items-center gap-4">
-                      <Switch
-                        checked={checkinRule.mandatory}
-                        onCheckedChange={(checked) => {
-                          // delegate to view model
-                          toggleMandatory(
-                            checkinRule.id as number,
-                            checked as boolean,
-                          );
-                        }}
-                      />
-
-                      <Button
-                        variant="ghost"
-                        size="icon"
-                        onClick={() => {
-                          setSelectedRuleForEdit(checkinRule);
-                          setEditModalOpen(true);
-                        }}
-                      >
-                        <Pencil className="h-4 w-4" />
-                      </Button>
-
-                      <Button
-                        variant="ghost"
-                        size="icon"
-                        onClick={() => {
-                          if (confirm("Tem certeza que deseja excluir?")) {
-                            removeRule(checkinRule.id as number);
-                          }
-                        }}
-                      >
-                        <Trash className="h-4 w-4 text-destructive" />
-                      </Button>
-                    </div>
-                    <div className="flex gap-12 text-sm text-muted-foreground">
-                      <div className="flex flex-col gap-1">
-                        <Label className="uppercase text-xs tracking-wide">
-                          Abertura
-                        </Label>
-                        <Label className="font-medium text-foreground">
-                          {checkinRule.startOffset} min antes
-                        </Label>
-                      </div>
-
-                      <div className="flex flex-col gap-1">
-                        <Label className="uppercase text-xs tracking-wide">
-                          Encerramento
-                        </Label>
-                        <Label className="font-medium text-foreground">
-                          {checkinRule.endOffset} min depois
-                        </Label>
-                      </div>
-                    </div>
-                  </CardFooter>
-                </Card>
+                  checkinRule={checkinRule}
+                  onToggleMandatory={toggleMandatory}
+                  onEdit={(rule) => {
+                    setSelectedRuleForEdit(rule);
+                    setEditModalOpen(true);
+                  }}
+                  onDelete={removeRule}
+                />
               ))}
             </>
           )}
@@ -208,7 +157,7 @@ export default function Checkin() {
           subtitle="Visão consolidada das regras configuradas"
         >
           <div className="grid md:grid-cols-3 grid-cols-1 gap-8">
-            {sections.map((section, index) => (
+            {sections.map((section: any, index: number) => (
               <CustomCard
                 key={index}
                 title={section.title}

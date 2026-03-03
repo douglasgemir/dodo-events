@@ -10,15 +10,22 @@ export async function GET() {
 }
 
 export async function POST(req: Request) {
-  const body = await req.json();
+  try {
+    const body = await req.json();
 
-  const event = await prisma.event.create({
-    data: {
-      ...body,
-      startDate: new Date(body.startDate),
-      endDate: new Date(body.endDate),
-    },
-  });
+    const event = await prisma.event.create({
+      data: {
+        ...body,
+        status: body.status || "ACTIVE",
+        placement: body.placement || "Não informado",
+        startDate: new Date(body.startDate),
+        endDate: new Date(body.endDate),
+      },
+    });
 
-  return NextResponse.json(event, { status: 201 });
+    return NextResponse.json(event, { status: 201 });
+  } catch (error: any) {
+    console.error("Error creating event:", error);
+    return NextResponse.json({ error: error.message }, { status: 400 });
+  }
 }
