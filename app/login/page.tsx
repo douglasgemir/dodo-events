@@ -1,45 +1,21 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import { useAuth } from "@/contexts/AuthContext";
-import { useRouter } from "next/navigation";
+import { useViewModel } from "./useViewModel";
 import Link from "next/link";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 
 export default function LoginPage() {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [error, setError] = useState("");
-  const { login, user, isLoading } = useAuth();
-  const router = useRouter();
-
-  useEffect(() => {
-    if (!isLoading && user) {
-      router.push("/protected/dashboard");
-    }
-  }, [user, isLoading, router]);
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setError("");
-
-    const res = await fetch("/api/auth/login", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ email, password }),
-    });
-
-    if (!res.ok) {
-      const json = await res.json();
-      setError(json.error || "Erro ao entrar");
-      return;
-    }
-
-    const userData = await res.json();
-    login(userData);
-  };
+  const {
+    email,
+    setEmail,
+    password,
+    setPassword,
+    error,
+    isSubmitting,
+    handleSubmit,
+  } = useViewModel();
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-sky-50 to-white flex items-center justify-center p-6">
@@ -57,7 +33,10 @@ export default function LoginPage() {
         >
           <h1 className="text-2xl font-semibold mb-4">Entrar</h1>
           {error && (
-            <div className="text-sm text-destructive mb-2">{error}</div>
+            <div className="flex items-center gap-2 text-sm text-red-600 bg-red-50 border border-red-200 rounded-md px-3 py-2 mb-3">
+              <span>⚠️</span>
+              <span>{error}</span>
+            </div>
           )}
 
           <div className="mb-4">
@@ -80,8 +59,8 @@ export default function LoginPage() {
           </div>
 
           <div className="flex items-center justify-between gap-4 mt-6">
-            <Button type="submit" className="w-full">
-              Entrar
+            <Button type="submit" className="w-full" disabled={isSubmitting}>
+              {isSubmitting ? "Entrando..." : "Entrar"}
             </Button>
           </div>
 
