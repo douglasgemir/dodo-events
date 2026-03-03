@@ -15,7 +15,10 @@ import { Card, CardFooter, CardHeader } from "@/components/ui/card";
 import { CheckinRule } from "@/prisma/generated/client";
 import { useViewModel } from "./useViewModel";
 import { Switch } from "@/components/ui/switch";
-import { Pencil, Trash } from "lucide-react";
+import { Pencil, Trash, Plus } from "lucide-react";
+// mutations moved into useViewModel
+import { CheckinRuleEditModal } from "./components/CheckinRuleEditModal";
+import { useState } from "react";
 
 type Event = {
   id: string;
@@ -35,7 +38,17 @@ export default function Checkin() {
     selectedEvent,
     isLoadingCheckins,
     checkinRulesList,
+    createCheckinRule,
+    updateCheckinRule,
+    deleteCheckinRule,
+    toggleMandatory,
+    removeRule,
+    createRule,
   } = useViewModel();
+
+  const [editModalOpen, setEditModalOpen] = useState(false);
+  const [selectedRuleForEdit, setSelectedRuleForEdit] =
+    useState<CheckinRule | null>(null);
 
   if (isLoading) {
     return null;
@@ -55,13 +68,13 @@ export default function Checkin() {
       </div>
 
       <div className="px-8 flex flex-col gap-6">
-        <div className="flex items-center gap-4">
+        <div className="flex items-center gap-2">
           <div className="w-72">
             <Select
               value={selectedEventId}
               onValueChange={setManuallySelectedId}
             >
-              <SelectTrigger>
+              <SelectTrigger className="bg-blue-50 border-blue-200 focus:ring-blue-500">
                 <SelectValue placeholder="Selecione um evento" />
               </SelectTrigger>
               <SelectContent>
@@ -75,13 +88,28 @@ export default function Checkin() {
           </div>
 
           {selectedEvent && (
-            <Badge
-              variant={
-                selectedEvent.status === "ACTIVE" ? "default" : "secondary"
-              }
-            >
-              {selectedEvent.status}
-            </Badge>
+            <>
+              <Badge
+                variant={
+                  selectedEvent.status === "ACTIVE" ? "default" : "secondary"
+                }
+                className="p-2"
+              >
+                {selectedEvent.status}
+              </Badge>
+
+              <Button
+                onClick={() => {
+                  setSelectedRuleForEdit(null);
+                  setEditModalOpen(true);
+                }}
+                size="sm"
+                className="gap-2"
+              >
+                <Plus className="h-4 w-4" />
+                Nova Regra
+              </Button>
+            </>
           )}
         </div>
 
@@ -103,15 +131,38 @@ export default function Checkin() {
                     </Label>
                   </CardHeader>
                   <CardFooter className="flex flex-col gap-4">
-                    {/* Linha dos ícones */}
                     <div className="flex w-full justify-end items-center gap-4">
-                      <Switch />
+                      <Switch
+                        checked={checkinRule.mandatory}
+                        onCheckedChange={(checked) => {
+                          // delegate to view model
+                          toggleMandatory(
+                            checkinRule.id as number,
+                            checked as boolean,
+                          );
+                        }}
+                      />
 
-                      <Button variant="ghost" size="icon">
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        onClick={() => {
+                          setSelectedRuleForEdit(checkinRule);
+                          setEditModalOpen(true);
+                        }}
+                      >
                         <Pencil className="h-4 w-4" />
                       </Button>
 
-                      <Button variant="ghost" size="icon">
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        onClick={() => {
+                          if (confirm("Tem certeza que deseja excluir?")) {
+                            removeRule(checkinRule.id as number);
+                          }
+                        }}
+                      >
                         <Trash className="h-4 w-4 text-destructive" />
                       </Button>
                     </div>
@@ -141,6 +192,15 @@ export default function Checkin() {
           )}
         </div>
       </div>
+
+      <CheckinRuleEditModal
+        isOpen={editModalOpen}
+        onOpenChange={setEditModalOpen}
+        checkinRule={selectedRuleForEdit}
+        eventId={selectedEventId}
+        isCreating={selectedRuleForEdit === null}
+        existingRules={checkinRulesList}
+      />
 
       <div className="px-8 pb-4">
         <CustomCard

@@ -3,7 +3,7 @@ import { useQuery } from "@tanstack/react-query";
 
 export function useEventCheckinRules(eventId?: string) {
   return useQuery({
-    queryKey: ["events", eventId, "checkin-rules"],
+    queryKey: ["checkin-rules", eventId],
     queryFn: async () => {
       const res = await fetch(`/api/events/${eventId}/checkin-rules`);
 

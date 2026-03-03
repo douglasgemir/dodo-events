@@ -2,6 +2,11 @@ import { CheckinRule, Event } from "@/prisma/generated/client";
 import { useEventCheckinRules } from "@/queries/events/useEventCheckinRules";
 import { useEvents } from "@/queries/events/useEvents";
 import { useState } from "react";
+import {
+  useCreateCheckinRule,
+  useUpdateCheckinRule,
+  useDeleteCheckinRule,
+} from "@/queries/mutations/checkinRules";
 
 export const useViewModel = () => {
   const { data: eventList, isLoading } = useEvents();
@@ -33,6 +38,22 @@ export const useViewModel = () => {
     (event: Event) => event.id === selectedEventId,
   );
 
+  const createCheckinRule = useCreateCheckinRule();
+  const updateCheckinRule = useUpdateCheckinRule();
+  const deleteCheckinRule = useDeleteCheckinRule();
+
+  function toggleMandatory(id: number, checked: boolean) {
+    return updateCheckinRule.mutate({ id, data: { mandatory: checked } });
+  }
+
+  function removeRule(id: number) {
+    return deleteCheckinRule.mutate(id);
+  }
+
+  function createRule(eventId: number, data: any) {
+    return createCheckinRule.mutate({ eventId, data });
+  }
+
   return {
     sections,
     isLoading,
@@ -42,5 +63,12 @@ export const useViewModel = () => {
     selectedEvent,
     isLoadingCheckins,
     checkinRulesList,
+    // mutations
+    createCheckinRule,
+    updateCheckinRule,
+    deleteCheckinRule,
+    toggleMandatory,
+    removeRule,
+    createRule,
   };
 };
