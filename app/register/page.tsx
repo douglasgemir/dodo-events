@@ -1,54 +1,21 @@
 "use client";
 
-import { useState } from "react";
-import { useRouter } from "next/navigation";
+import { useViewModel } from "./useViewModel";
 import Link from "next/link";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 
 export default function RegisterPage() {
-  const [name, setName] = useState("");
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [confirm, setConfirm] = useState("");
-  const [error, setError] = useState("");
-  const [loading, setLoading] = useState(false);
-  const router = useRouter();
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setError("");
-    if (!name || !email || !password) {
-      setError("Preencha todos os campos");
-      return;
-    }
-    if (password !== confirm) {
-      setError("As senhas não conferem");
-      return;
-    }
-
-    setLoading(true);
-    try {
-      const res = await fetch("/api/auth/register", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ name, email, password }),
-      });
-
-      if (!res.ok) {
-        const json = await res.json();
-        setError(json.error || "Erro ao cadastrar");
-        setLoading(false);
-        return;
-      }
-
-      router.push("/login");
-    } catch (err) {
-      setError("Erro ao conectar com o servidor");
-      setLoading(false);
-    }
-  };
+  const {
+    name, setName,
+    email, setEmail,
+    password, setPassword,
+    confirm, setConfirm,
+    error,
+    isLoading,
+    handleSubmit,
+  } = useViewModel();
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-sky-50 to-white flex items-center justify-center p-6">
@@ -67,7 +34,10 @@ export default function RegisterPage() {
           <h1 className="text-2xl font-semibold mb-4">Cadastro</h1>
 
           {error && (
-            <div className="text-sm text-destructive mb-2">{error}</div>
+            <div className="flex items-center gap-2 text-sm text-red-600 bg-red-50 border border-red-200 rounded-md px-3 py-2 mb-3">
+              <span>⚠️</span>
+              <span>{error}</span>
+            </div>
           )}
 
           <div className="mb-3">
@@ -109,8 +79,8 @@ export default function RegisterPage() {
           </div>
 
           <div className="flex items-center justify-between gap-4 mt-4">
-            <Button type="submit" className="w-full" disabled={loading}>
-              {loading ? "Criando..." : "Criar conta"}
+            <Button type="submit" className="w-full" disabled={isLoading}>
+              {isLoading ? "Criando..." : "Criar conta"}
             </Button>
           </div>
 
