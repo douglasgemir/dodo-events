@@ -1,0 +1,82 @@
+generator client {
+  provider = "prisma-client"
+  output   = "./generated"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum CheckinRuleType {
+  QR_CODE
+  DOCUMENTO
+  LISTA_IMPRESSA
+  CONFIRMACAO_EMAIL
+}
+
+model User {
+  id        Int       @id @default(autoincrement())
+
+  name      String
+  email     String    @unique
+  password  String
+
+  checkins  Checkin[]
+
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+}
+
+model Event {
+  id           Int            @id @default(autoincrement())
+
+  name         String
+  imageUrl     String?
+  placement    String
+  startDate    DateTime
+  endDate      DateTime
+  status       String
+
+  checkins     Checkin[]
+  checkinRules CheckinRule[]
+
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+}
+
+model CheckinRule {
+  id          Int    @id @default(autoincrement())
+
+  event       Event  @relation(fields:[eventId], references:[id])
+  eventId     Int
+
+  type        CheckinRuleType
+  isActive    Boolean
+
+  startOffset Int
+  endOffset   Int
+  mandatory   Boolean
+
+  checkins    Checkin[]
+
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model Checkin {
+  id        Int      @id @default(autoincrement())
+
+  user      User     @relation(fields:[userId], references:[id])
+  userId    Int
+
+  event     Event    @relation(fields:[eventId], references:[id])
+  eventId   Int
+
+  checkinRule   CheckinRule @relation(fields:[checkinRuleId], references:[id])
+  checkinRuleId Int
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([userId, eventId])
+}
