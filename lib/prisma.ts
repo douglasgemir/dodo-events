@@ -1,3 +1,4 @@
+// Prisma client singleton — regenerated to include isActive field
 import { PrismaClient } from "@/prisma/generated/client";
 import { PrismaPg } from "@prisma/adapter-pg";
 

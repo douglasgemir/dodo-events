@@ -44,6 +44,7 @@ export type CheckinRuleMinAggregateOutputType = {
   id: number | null
   eventId: number | null
   type: $Enums.CheckinRuleType | null
+  isActive: boolean | null
   startOffset: number | null
   endOffset: number | null
   mandatory: boolean | null
@@ -55,6 +56,7 @@ export type CheckinRuleMaxAggregateOutputType = {
   id: number | null
   eventId: number | null
   type: $Enums.CheckinRuleType | null
+  isActive: boolean | null
   startOffset: number | null
   endOffset: number | null
   mandatory: boolean | null
@@ -66,6 +68,7 @@ export type CheckinRuleCountAggregateOutputType = {
   id: number
   eventId: number
   type: number
+  isActive: number
   startOffset: number
   endOffset: number
   mandatory: number
@@ -93,6 +96,7 @@ export type CheckinRuleMinAggregateInputType = {
   id?: true
   eventId?: true
   type?: true
+  isActive?: true
   startOffset?: true
   endOffset?: true
   mandatory?: true
@@ -104,6 +108,7 @@ export type CheckinRuleMaxAggregateInputType = {
   id?: true
   eventId?: true
   type?: true
+  isActive?: true
   startOffset?: true
   endOffset?: true
   mandatory?: true
@@ -115,6 +120,7 @@ export type CheckinRuleCountAggregateInputType = {
   id?: true
   eventId?: true
   type?: true
+  isActive?: true
   startOffset?: true
   endOffset?: true
   mandatory?: true
@@ -213,6 +219,7 @@ export type CheckinRuleGroupByOutputType = {
   id: number
   eventId: number
   type: $Enums.CheckinRuleType
+  isActive: boolean
   startOffset: number
   endOffset: number
   mandatory: boolean
@@ -247,6 +254,7 @@ export type CheckinRuleWhereInput = {
   id?: Prisma.IntFilter<"CheckinRule"> | number
   eventId?: Prisma.IntFilter<"CheckinRule"> | number
   type?: Prisma.EnumCheckinRuleTypeFilter<"CheckinRule"> | $Enums.CheckinRuleType
+  isActive?: Prisma.BoolFilter<"CheckinRule"> | boolean
   startOffset?: Prisma.IntFilter<"CheckinRule"> | number
   endOffset?: Prisma.IntFilter<"CheckinRule"> | number
   mandatory?: Prisma.BoolFilter<"CheckinRule"> | boolean
@@ -260,6 +268,7 @@ export type CheckinRuleOrderByWithRelationInput = {
   id?: Prisma.SortOrder
   eventId?: Prisma.SortOrder
   type?: Prisma.SortOrder
+  isActive?: Prisma.SortOrder
   startOffset?: Prisma.SortOrder
   endOffset?: Prisma.SortOrder
   mandatory?: Prisma.SortOrder
@@ -276,6 +285,7 @@ export type CheckinRuleWhereUniqueInput = Prisma.AtLeast<{
   NOT?: Prisma.CheckinRuleWhereInput | Prisma.CheckinRuleWhereInput[]
   eventId?: Prisma.IntFilter<"CheckinRule"> | number
   type?: Prisma.EnumCheckinRuleTypeFilter<"CheckinRule"> | $Enums.CheckinRuleType
+  isActive?: Prisma.BoolFilter<"CheckinRule"> | boolean
   startOffset?: Prisma.IntFilter<"CheckinRule"> | number
   endOffset?: Prisma.IntFilter<"CheckinRule"> | number
   mandatory?: Prisma.BoolFilter<"CheckinRule"> | boolean
@@ -289,6 +299,7 @@ export type CheckinRuleOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
   eventId?: Prisma.SortOrder
   type?: Prisma.SortOrder
+  isActive?: Prisma.SortOrder
   startOffset?: Prisma.SortOrder
   endOffset?: Prisma.SortOrder
   mandatory?: Prisma.SortOrder
@@ -308,6 +319,7 @@ export type CheckinRuleScalarWhereWithAggregatesInput = {
   id?: Prisma.IntWithAggregatesFilter<"CheckinRule"> | number
   eventId?: Prisma.IntWithAggregatesFilter<"CheckinRule"> | number
   type?: Prisma.EnumCheckinRuleTypeWithAggregatesFilter<"CheckinRule"> | $Enums.CheckinRuleType
+  isActive?: Prisma.BoolWithAggregatesFilter<"CheckinRule"> | boolean
   startOffset?: Prisma.IntWithAggregatesFilter<"CheckinRule"> | number
   endOffset?: Prisma.IntWithAggregatesFilter<"CheckinRule"> | number
   mandatory?: Prisma.BoolWithAggregatesFilter<"CheckinRule"> | boolean
@@ -317,6 +329,7 @@ export type CheckinRuleScalarWhereWithAggregatesInput = {
 
 export type CheckinRuleCreateInput = {
   type: $Enums.CheckinRuleType
+  isActive: boolean
   startOffset: number
   endOffset: number
   mandatory: boolean
@@ -330,6 +343,7 @@ export type CheckinRuleUncheckedCreateInput = {
   id?: number
   eventId: number
   type: $Enums.CheckinRuleType
+  isActive: boolean
   startOffset: number
   endOffset: number
   mandatory: boolean
@@ -340,6 +354,7 @@ export type CheckinRuleUncheckedCreateInput = {
 
 export type CheckinRuleUpdateInput = {
   type?: Prisma.EnumCheckinRuleTypeFieldUpdateOperationsInput | $Enums.CheckinRuleType
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   startOffset?: Prisma.IntFieldUpdateOperationsInput | number
   endOffset?: Prisma.IntFieldUpdateOperationsInput | number
   mandatory?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -353,6 +368,7 @@ export type CheckinRuleUncheckedUpdateInput = {
   id?: Prisma.IntFieldUpdateOperationsInput | number
   eventId?: Prisma.IntFieldUpdateOperationsInput | number
   type?: Prisma.EnumCheckinRuleTypeFieldUpdateOperationsInput | $Enums.CheckinRuleType
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   startOffset?: Prisma.IntFieldUpdateOperationsInput | number
   endOffset?: Prisma.IntFieldUpdateOperationsInput | number
   mandatory?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -365,6 +381,7 @@ export type CheckinRuleCreateManyInput = {
   id?: number
   eventId: number
   type: $Enums.CheckinRuleType
+  isActive: boolean
   startOffset: number
   endOffset: number
   mandatory: boolean
@@ -374,6 +391,7 @@ export type CheckinRuleCreateManyInput = {
 
 export type CheckinRuleUpdateManyMutationInput = {
   type?: Prisma.EnumCheckinRuleTypeFieldUpdateOperationsInput | $Enums.CheckinRuleType
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   startOffset?: Prisma.IntFieldUpdateOperationsInput | number
   endOffset?: Prisma.IntFieldUpdateOperationsInput | number
   mandatory?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -385,6 +403,7 @@ export type CheckinRuleUncheckedUpdateManyInput = {
   id?: Prisma.IntFieldUpdateOperationsInput | number
   eventId?: Prisma.IntFieldUpdateOperationsInput | number
   type?: Prisma.EnumCheckinRuleTypeFieldUpdateOperationsInput | $Enums.CheckinRuleType
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   startOffset?: Prisma.IntFieldUpdateOperationsInput | number
   endOffset?: Prisma.IntFieldUpdateOperationsInput | number
   mandatory?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -406,6 +425,7 @@ export type CheckinRuleCountOrderByAggregateInput = {
   id?: Prisma.SortOrder
   eventId?: Prisma.SortOrder
   type?: Prisma.SortOrder
+  isActive?: Prisma.SortOrder
   startOffset?: Prisma.SortOrder
   endOffset?: Prisma.SortOrder
   mandatory?: Prisma.SortOrder
@@ -424,6 +444,7 @@ export type CheckinRuleMaxOrderByAggregateInput = {
   id?: Prisma.SortOrder
   eventId?: Prisma.SortOrder
   type?: Prisma.SortOrder
+  isActive?: Prisma.SortOrder
   startOffset?: Prisma.SortOrder
   endOffset?: Prisma.SortOrder
   mandatory?: Prisma.SortOrder
@@ -435,6 +456,7 @@ export type CheckinRuleMinOrderByAggregateInput = {
   id?: Prisma.SortOrder
   eventId?: Prisma.SortOrder
   type?: Prisma.SortOrder
+  isActive?: Prisma.SortOrder
   startOffset?: Prisma.SortOrder
   endOffset?: Prisma.SortOrder
   mandatory?: Prisma.SortOrder
@@ -520,6 +542,7 @@ export type CheckinRuleUpdateOneRequiredWithoutCheckinsNestedInput = {
 
 export type CheckinRuleCreateWithoutEventInput = {
   type: $Enums.CheckinRuleType
+  isActive: boolean
   startOffset: number
   endOffset: number
   mandatory: boolean
@@ -531,6 +554,7 @@ export type CheckinRuleCreateWithoutEventInput = {
 export type CheckinRuleUncheckedCreateWithoutEventInput = {
   id?: number
   type: $Enums.CheckinRuleType
+  isActive: boolean
   startOffset: number
   endOffset: number
   mandatory: boolean
@@ -572,6 +596,7 @@ export type CheckinRuleScalarWhereInput = {
   id?: Prisma.IntFilter<"CheckinRule"> | number
   eventId?: Prisma.IntFilter<"CheckinRule"> | number
   type?: Prisma.EnumCheckinRuleTypeFilter<"CheckinRule"> | $Enums.CheckinRuleType
+  isActive?: Prisma.BoolFilter<"CheckinRule"> | boolean
   startOffset?: Prisma.IntFilter<"CheckinRule"> | number
   endOffset?: Prisma.IntFilter<"CheckinRule"> | number
   mandatory?: Prisma.BoolFilter<"CheckinRule"> | boolean
@@ -581,6 +606,7 @@ export type CheckinRuleScalarWhereInput = {
 
 export type CheckinRuleCreateWithoutCheckinsInput = {
   type: $Enums.CheckinRuleType
+  isActive: boolean
   startOffset: number
   endOffset: number
   mandatory: boolean
@@ -593,6 +619,7 @@ export type CheckinRuleUncheckedCreateWithoutCheckinsInput = {
   id?: number
   eventId: number
   type: $Enums.CheckinRuleType
+  isActive: boolean
   startOffset: number
   endOffset: number
   mandatory: boolean
@@ -618,6 +645,7 @@ export type CheckinRuleUpdateToOneWithWhereWithoutCheckinsInput = {
 
 export type CheckinRuleUpdateWithoutCheckinsInput = {
   type?: Prisma.EnumCheckinRuleTypeFieldUpdateOperationsInput | $Enums.CheckinRuleType
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   startOffset?: Prisma.IntFieldUpdateOperationsInput | number
   endOffset?: Prisma.IntFieldUpdateOperationsInput | number
   mandatory?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -630,6 +658,7 @@ export type CheckinRuleUncheckedUpdateWithoutCheckinsInput = {
   id?: Prisma.IntFieldUpdateOperationsInput | number
   eventId?: Prisma.IntFieldUpdateOperationsInput | number
   type?: Prisma.EnumCheckinRuleTypeFieldUpdateOperationsInput | $Enums.CheckinRuleType
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   startOffset?: Prisma.IntFieldUpdateOperationsInput | number
   endOffset?: Prisma.IntFieldUpdateOperationsInput | number
   mandatory?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -640,6 +669,7 @@ export type CheckinRuleUncheckedUpdateWithoutCheckinsInput = {
 export type CheckinRuleCreateManyEventInput = {
   id?: number
   type: $Enums.CheckinRuleType
+  isActive: boolean
   startOffset: number
   endOffset: number
   mandatory: boolean
@@ -649,6 +679,7 @@ export type CheckinRuleCreateManyEventInput = {
 
 export type CheckinRuleUpdateWithoutEventInput = {
   type?: Prisma.EnumCheckinRuleTypeFieldUpdateOperationsInput | $Enums.CheckinRuleType
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   startOffset?: Prisma.IntFieldUpdateOperationsInput | number
   endOffset?: Prisma.IntFieldUpdateOperationsInput | number
   mandatory?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -660,6 +691,7 @@ export type CheckinRuleUpdateWithoutEventInput = {
 export type CheckinRuleUncheckedUpdateWithoutEventInput = {
   id?: Prisma.IntFieldUpdateOperationsInput | number
   type?: Prisma.EnumCheckinRuleTypeFieldUpdateOperationsInput | $Enums.CheckinRuleType
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   startOffset?: Prisma.IntFieldUpdateOperationsInput | number
   endOffset?: Prisma.IntFieldUpdateOperationsInput | number
   mandatory?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -671,6 +703,7 @@ export type CheckinRuleUncheckedUpdateWithoutEventInput = {
 export type CheckinRuleUncheckedUpdateManyWithoutEventInput = {
   id?: Prisma.IntFieldUpdateOperationsInput | number
   type?: Prisma.EnumCheckinRuleTypeFieldUpdateOperationsInput | $Enums.CheckinRuleType
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   startOffset?: Prisma.IntFieldUpdateOperationsInput | number
   endOffset?: Prisma.IntFieldUpdateOperationsInput | number
   mandatory?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -713,6 +746,7 @@ export type CheckinRuleSelect<ExtArgs extends runtime.Types.Extensions.InternalA
   id?: boolean
   eventId?: boolean
   type?: boolean
+  isActive?: boolean
   startOffset?: boolean
   endOffset?: boolean
   mandatory?: boolean
@@ -727,6 +761,7 @@ export type CheckinRuleSelectCreateManyAndReturn<ExtArgs extends runtime.Types.E
   id?: boolean
   eventId?: boolean
   type?: boolean
+  isActive?: boolean
   startOffset?: boolean
   endOffset?: boolean
   mandatory?: boolean
@@ -739,6 +774,7 @@ export type CheckinRuleSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.E
   id?: boolean
   eventId?: boolean
   type?: boolean
+  isActive?: boolean
   startOffset?: boolean
   endOffset?: boolean
   mandatory?: boolean
@@ -751,6 +787,7 @@ export type CheckinRuleSelectScalar = {
   id?: boolean
   eventId?: boolean
   type?: boolean
+  isActive?: boolean
   startOffset?: boolean
   endOffset?: boolean
   mandatory?: boolean
@@ -758,7 +795,7 @@ export type CheckinRuleSelectScalar = {
   updatedAt?: boolean
 }
 
-export type CheckinRuleOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "eventId" | "type" | "startOffset" | "endOffset" | "mandatory" | "createdAt" | "updatedAt", ExtArgs["result"]["checkinRule"]>
+export type CheckinRuleOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "eventId" | "type" | "isActive" | "startOffset" | "endOffset" | "mandatory" | "createdAt" | "updatedAt", ExtArgs["result"]["checkinRule"]>
 export type CheckinRuleInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   event?: boolean | Prisma.EventDefaultArgs<ExtArgs>
   checkins?: boolean | Prisma.CheckinRule$checkinsArgs<ExtArgs>
@@ -781,6 +818,7 @@ export type $CheckinRulePayload<ExtArgs extends runtime.Types.Extensions.Interna
     id: number
     eventId: number
     type: $Enums.CheckinRuleType
+    isActive: boolean
     startOffset: number
     endOffset: number
     mandatory: boolean
@@ -1214,6 +1252,7 @@ export interface CheckinRuleFieldRefs {
   readonly id: Prisma.FieldRef<"CheckinRule", 'Int'>
   readonly eventId: Prisma.FieldRef<"CheckinRule", 'Int'>
   readonly type: Prisma.FieldRef<"CheckinRule", 'CheckinRuleType'>
+  readonly isActive: Prisma.FieldRef<"CheckinRule", 'Boolean'>
   readonly startOffset: Prisma.FieldRef<"CheckinRule", 'Int'>
   readonly endOffset: Prisma.FieldRef<"CheckinRule", 'Int'>
   readonly mandatory: Prisma.FieldRef<"CheckinRule", 'Boolean'>

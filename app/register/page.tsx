@@ -7,15 +7,12 @@ import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 
 export default function RegisterPage() {
+  const { form, onSubmit } = useViewModel();
   const {
-    name, setName,
-    email, setEmail,
-    password, setPassword,
-    confirm, setConfirm,
-    error,
-    isLoading,
+    register,
     handleSubmit,
-  } = useViewModel();
+    formState: { errors, isSubmitting },
+  } = form;
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-sky-50 to-white flex items-center justify-center p-6">
@@ -27,60 +24,51 @@ export default function RegisterPage() {
           </p>
         </div>
 
-        <form
-          onSubmit={handleSubmit}
-          className="bg-white rounded-lg p-8 shadow-md"
-        >
+        <form onSubmit={handleSubmit(onSubmit)} className="bg-white rounded-lg p-8 shadow-md">
           <h1 className="text-2xl font-semibold mb-4">Cadastro</h1>
 
-          {error && (
+          {errors.root && (
             <div className="flex items-center gap-2 text-sm text-red-600 bg-red-50 border border-red-200 rounded-md px-3 py-2 mb-3">
               <span>⚠️</span>
-              <span>{error}</span>
+              <span>{errors.root.message}</span>
             </div>
           )}
 
           <div className="mb-3">
             <Label className="text-sm">Nome</Label>
-            <Input
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-              placeholder="Seu nome"
-            />
+            <Input {...register("name")} placeholder="Seu nome" />
+            {errors.name && (
+              <p className="text-xs text-red-500 mt-1">{errors.name.message}</p>
+            )}
           </div>
 
           <div className="mb-3">
             <Label className="text-sm">Email</Label>
-            <Input
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              placeholder="seu@exemplo.com"
-            />
+            <Input {...register("email")} placeholder="seu@exemplo.com" />
+            {errors.email && (
+              <p className="text-xs text-red-500 mt-1">{errors.email.message}</p>
+            )}
           </div>
 
           <div className="mb-3">
             <Label className="text-sm">Senha</Label>
-            <Input
-              type="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              placeholder="••••••••"
-            />
+            <Input type="password" {...register("password")} placeholder="••••••••" />
+            {errors.password && (
+              <p className="text-xs text-red-500 mt-1">{errors.password.message}</p>
+            )}
           </div>
 
           <div className="mb-4">
             <Label className="text-sm">Confirme a senha</Label>
-            <Input
-              type="password"
-              value={confirm}
-              onChange={(e) => setConfirm(e.target.value)}
-              placeholder="••••••••"
-            />
+            <Input type="password" {...register("confirm")} placeholder="••••••••" />
+            {errors.confirm && (
+              <p className="text-xs text-red-500 mt-1">{errors.confirm.message}</p>
+            )}
           </div>
 
           <div className="flex items-center justify-between gap-4 mt-4">
-            <Button type="submit" className="w-full" disabled={isLoading}>
-              {isLoading ? "Criando..." : "Criar conta"}
+            <Button type="submit" className="w-full" disabled={isSubmitting}>
+              {isSubmitting ? "Criando..." : "Criar conta"}
             </Button>
           </div>
 

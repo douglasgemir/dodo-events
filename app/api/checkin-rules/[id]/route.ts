@@ -20,12 +20,19 @@ export async function PUT(
   const { id } = await params;
   const body = await req.json();
 
-  const rule = await prisma.checkinRule.update({
-    where: { id: Number(id) },
-    data: body,
-  });
+  // Only pass updatable fields — Prisma rejects unknown keys
+  const { type, isActive, startOffset, endOffset, mandatory } = body;
 
-  return NextResponse.json(rule);
+  try {
+    const rule = await prisma.checkinRule.update({
+      where: { id: Number(id) },
+      data: { type, isActive, startOffset, endOffset, mandatory } as any,
+    });
+    return NextResponse.json(rule);
+  } catch (error: any) {
+    console.error("Error updating checkin rule:", error);
+    return NextResponse.json({ error: error.message }, { status: 500 });
+  }
 }
 
 export async function DELETE(

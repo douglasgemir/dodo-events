@@ -18,7 +18,7 @@ export async function GET(
 
 export async function POST(
   req: Request,
-  { params }: { params: Promise<{ id: string }> },
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const { id } = await params;
@@ -29,15 +29,19 @@ export async function POST(
         type: body.type,
         startOffset: Number(body.startOffset) || 0,
         endOffset: Number(body.endOffset) || 0,
-        mandatory: body.mandatory ?? false,
+        mandatory: Boolean(body.mandatory),
+        isActive: body.isActive ?? false,
         eventId: Number(id),
       },
     });
 
-    return NextResponse.json(rule, { status: 201 });
-  } catch (error: any) {
+    return NextResponse.json(rule);
+  } catch (error) {
     console.error("Error creating checkin rule:", error);
-    return NextResponse.json({ error: error.message }, { status: 400 });
+    return NextResponse.json(
+      { error: "Erro ao criar regra" },
+      { status: 400 }
+    );
   }
 }
 
@@ -52,11 +56,12 @@ export async function PUT(
     where: { id: Number(id) },
     data: {
       type: body.type,
+      isActive: body.isActive ?? true,
       startOffset: Number(body.startOffset) || 0,
       endOffset: Number(body.endOffset) || 0,
       mandatory: body.mandatory ?? false,
     },
-  });
+  } as any);
 
   return NextResponse.json(rule);
 }

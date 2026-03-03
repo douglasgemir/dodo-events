@@ -1,60 +1,56 @@
 "use client";
 
-import { useState } from "react";
+import { z } from "zod";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
 
+const registerSchema = z
+  .object({
+    name: z.string().min(2, "Nome deve ter ao menos 2 caracteres"),
+    email: z.string().min(1, "Email é obrigatório").email("Email inválido"),
+    password: z.string().min(6, "Senha deve ter ao menos 6 caracteres"),
+    confirm: z.string().min(1, "Confirme sua senha"),
+  })
+  .refine((data) => data.password === data.confirm, {
+    message: "As senhas não conferem",
+    path: ["confirm"],
+  });
+
+export type RegisterFormData = z.infer<typeof registerSchema>;
+
 export function useViewModel() {
-  const [name, setName] = useState("");
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [confirm, setConfirm] = useState("");
-  const [error, setError] = useState("");
-  const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setError("");
+  const form = useForm<RegisterFormData>({
+    resolver: zodResolver(registerSchema),
+    defaultValues: { name: "", email: "", password: "", confirm: "" },
+  });
 
-    if (!name || !email || !password) {
-      setError("Preencha todos os campos");
-      return;
-    }
-    if (password !== confirm) {
-      setError("As senhas não conferem");
-      return;
-    }
-
-    setIsLoading(true);
+  const onSubmit = async (data: RegisterFormData) => {
     try {
       const res = await fetch("/api/auth/register", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ name, email, password }),
+        body: JSON.stringify({ name: data.name, email: data.email, password: data.password }),
       });
 
       const json = await res.json();
 
       if (!res.ok) {
-        setError(json.error || "Erro ao cadastrar. Tente novamente.");
+        form.setError("root", {
+          message: json.error || "Erro ao cadastrar. Tente novamente.",
+        });
         return;
       }
 
       router.push("/login");
     } catch (err) {
-      setError("Falha ao conectar com o servidor. Verifique sua conexão.");
-    } finally {
-      setIsLoading(false);
+      form.setError("root", {
+        message: "Falha ao conectar com o servidor. Verifique sua conexão.",
+      });
     }
   };
 
-  return {
-    name, setName,
-    email, setEmail,
-    password, setPassword,
-    confirm, setConfirm,
-    error,
-    isLoading,
-    handleSubmit,
-  };
+  return { form, onSubmit };
 }

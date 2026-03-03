@@ -7,15 +7,12 @@ import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 
 export default function LoginPage() {
+  const { form, onSubmit } = useViewModel();
   const {
-    email,
-    setEmail,
-    password,
-    setPassword,
-    error,
-    isSubmitting,
+    register,
     handleSubmit,
-  } = useViewModel();
+    formState: { errors, isSubmitting },
+  } = form;
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-sky-50 to-white flex items-center justify-center p-6">
@@ -27,35 +24,30 @@ export default function LoginPage() {
           </p>
         </div>
 
-        <form
-          onSubmit={handleSubmit}
-          className="bg-white rounded-lg p-8 shadow-md"
-        >
+        <form onSubmit={handleSubmit(onSubmit)} className="bg-white rounded-lg p-8 shadow-md">
           <h1 className="text-2xl font-semibold mb-4">Entrar</h1>
-          {error && (
+
+          {errors.root && (
             <div className="flex items-center gap-2 text-sm text-red-600 bg-red-50 border border-red-200 rounded-md px-3 py-2 mb-3">
               <span>⚠️</span>
-              <span>{error}</span>
+              <span>{errors.root.message}</span>
             </div>
           )}
 
           <div className="mb-4">
             <Label className="text-sm">Email</Label>
-            <Input
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              placeholder="seu@exemplo.com"
-            />
+            <Input {...register("email")} placeholder="seu@exemplo.com" />
+            {errors.email && (
+              <p className="text-xs text-red-500 mt-1">{errors.email.message}</p>
+            )}
           </div>
 
           <div className="mb-4">
             <Label className="text-sm">Senha</Label>
-            <Input
-              type="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              placeholder="••••••••"
-            />
+            <Input type="password" {...register("password")} placeholder="••••••••" />
+            {errors.password && (
+              <p className="text-xs text-red-500 mt-1">{errors.password.message}</p>
+            )}
           </div>
 
           <div className="flex items-center justify-between gap-4 mt-6">

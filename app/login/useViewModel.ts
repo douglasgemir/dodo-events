@@ -1,57 +1,58 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useEffect } from "react";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { z } from "zod";
 import { useAuth } from "@/contexts/AuthContext";
 import { useRouter } from "next/navigation";
 
+const loginSchema = z.object({
+  email: z.string().min(1, "Email é obrigatório").email("Email inválido"),
+  password: z.string().min(1, "Senha é obrigatória"),
+});
+
+export type LoginFormData = z.infer<typeof loginSchema>;
+
 export function useViewModel() {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [error, setError] = useState("");
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const { login, user, isLoading } = useAuth();
+  const { login, user, isLoading: authLoading } = useAuth();
   const router = useRouter();
 
+  const form = useForm<LoginFormData>({
+    resolver: zodResolver(loginSchema),
+    defaultValues: { email: "", password: "" },
+  });
+
   useEffect(() => {
-    if (!isLoading && user) {
+    if (!authLoading && user) {
       router.push("/protected/dashboard");
     }
-  }, [user, isLoading, router]);
+  }, [user, authLoading, router]);
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setError("");
-    setIsSubmitting(true);
-
+  const onSubmit = async (data: LoginFormData) => {
     try {
       const res = await fetch("/api/auth/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, password }),
+        body: JSON.stringify(data),
       });
 
       const json = await res.json();
 
       if (!res.ok) {
-        setError(json.error || "Credenciais inválidas. Tente novamente.");
+        form.setError("root", {
+          message: json.error || "Credenciais inválidas. Tente novamente.",
+        });
         return;
       }
 
       login(json);
     } catch (err) {
-      setError("Falha ao conectar com o servidor. Verifique sua conexão.");
-    } finally {
-      setIsSubmitting(false);
+      form.setError("root", {
+        message: "Falha ao conectar com o servidor. Verifique sua conexão.",
+      });
     }
   };
 
-  return {
-    email,
-    setEmail,
-    password,
-    setPassword,
-    error,
-    isSubmitting,
-    handleSubmit,
-  };
+  return { form, onSubmit };
 }

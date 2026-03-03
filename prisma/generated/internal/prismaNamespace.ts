@@ -773,6 +773,7 @@ export const CheckinRuleScalarFieldEnum = {
   id: 'id',
   eventId: 'eventId',
   type: 'type',
+  isActive: 'isActive',
   startOffset: 'startOffset',
   endOffset: 'endOffset',
   mandatory: 'mandatory',
