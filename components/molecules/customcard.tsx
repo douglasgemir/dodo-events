@@ -35,16 +35,18 @@ export const CustomCard = ({
 
   return (
     <Card className={cn(rootStyle)}>
-      <CardHeader
-        className={cn("flex justify-between items-start", headerStyle)}
-      >
-        <div className="flex flex-col gap-2">
-          <Label className={cn(titleSize)}>{title}</Label>
-          <Label className={cn(subtitleSize)}>{subtitle}</Label>
-        </div>
+      {(title || subtitle) && (
+        <CardHeader
+          className={cn("flex justify-between items-start", headerStyle)}
+        >
+          <div className="flex flex-col gap-2">
+            <Label className={cn(titleSize)}>{title}</Label>
+            <Label className={cn(subtitleSize)}>{subtitle}</Label>
+          </div>
 
-        {Icon && <Icon className="w-5 h-5 text-muted-foreground" />}
-      </CardHeader>
+          {Icon && <Icon className="w-5 h-5 text-muted-foreground" />}
+        </CardHeader>
+      )}
 
       <CardContent className={cn(contentStyle)}>{children}</CardContent>
 
